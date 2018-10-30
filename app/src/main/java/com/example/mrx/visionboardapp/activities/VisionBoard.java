@@ -1,14 +1,15 @@
 package com.example.mrx.visionboardapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,16 +20,13 @@ import android.widget.Toast;
 import com.example.mrx.visionboardapp.Helpers.GetImageExternalStorage;
 import com.example.mrx.visionboardapp.R;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class VisionBoard extends AppCompatActivity {
 
-    private final int RESULT_LOAD_IMAGE = 21123;
+    private static final int RESULT_LOAD_IMAGE = 21123;
+    private static final String IMAGE_URI_KEY = "imageUriKey";
 
     private ImageView imageView;
 
@@ -38,7 +36,7 @@ public class VisionBoard extends AppCompatActivity {
         setContentView(R.layout.activity_vision_board);
         imageView = findViewById(R.id.imageView);
 
-        GetImageExternalStorage.checkReadPermission(this);
+        getChoosenImage();
     }
 
     @Override
@@ -91,9 +89,22 @@ public class VisionBoard extends AppCompatActivity {
             InputStream inputStream = getContentResolver().openInputStream(uri);
             Bitmap image = BitmapFactory.decodeStream(inputStream);
             imageView.setImageBitmap(image);
+            SharedPreferences.Editor sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            sharedPreferences.putString(IMAGE_URI_KEY, uri.toString());
+            sharedPreferences.commit();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Toast.makeText(this, getString(R.string.couldnt_find_file), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getChoosenImage(){
+        String uri = PreferenceManager.getDefaultSharedPreferences(this).getString(IMAGE_URI_KEY, null);
+        if (uri != null){
+            boolean result = GetImageExternalStorage.checkReadPermission(this);
+            if (result) {
+                setImage(Uri.parse(uri));
+            }
         }
     }
 }
