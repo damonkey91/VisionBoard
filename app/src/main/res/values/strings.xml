@@ -2,4 +2,5 @@
     <string name="app_name">Visionboard app</string>
     <string name="add">Lägg till</string>
     <string name="couldnt_find_file">Kunde inte hitta filen!</string>
+    <string name="finished">Klar</string>
 </resources>
