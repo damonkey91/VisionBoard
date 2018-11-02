@@ -3,4 +3,12 @@
     <string name="add">Lägg till</string>
     <string name="couldnt_find_file">Kunde inte hitta filen!</string>
     <string name="finished">Klar</string>
+    <string name="add_sign">+</string>
+    <string name="monday">Måndag</string>
+    <string name="tuseday">Tisdag</string>
+    <string name="thursday">Torsdag</string>
+    <string name="wednesday">Onsdag</string>
+    <string name="friday">Fredag</string>
+    <string name="saturday">Lördag</string>
+    <string name="sunday">Söndag</string>
 </resources>

@@ -7,17 +7,25 @@ import android.widget.TextView;
 
 import com.example.mrx.visionboardapp.Objects.Task;
 import com.example.mrx.visionboardapp.R;
+import com.example.mrx.visionboardapp.ViewModels.WeekdayViewModel;
 
 import java.util.ArrayList;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class WeekdaysSection extends StatelessSection {
 
+    private int sectionNr;
     private String title;
     private ArrayList<Task> taskList;
-    public WeekdaysSection(String title, ArrayList<Task> taskList) {
+    private WeekdayViewModel viewModel;
+    private SectionedRecyclerViewAdapter adapter;
+    private Section section;
+
+    public WeekdaysSection(String title, ArrayList<Task> taskList, WeekdayViewModel viewModel, int sectionNr, SectionedRecyclerViewAdapter adapter) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.item_recycler_view)
                 .headerResourceId(R.layout.header_recycler_view)
@@ -25,6 +33,10 @@ public class WeekdaysSection extends StatelessSection {
 
         this.title = title;
         this.taskList = taskList;
+        this.viewModel = viewModel;
+        this.sectionNr = sectionNr;
+        this.adapter = adapter;
+        section = this;
     }
 
     @Override
@@ -63,8 +75,16 @@ public class WeekdaysSection extends StatelessSection {
         public HeaderViewHolder(View view){
             super(view);
             headerTitle = view.findViewById(R.id.title_header);
+            Button addButton = view.findViewById(R.id.add_task_button);
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Todo: create dialog that creates a task and sends it back here
+                    viewModel.addTask(sectionNr, new Task("Springa", "Springa 6km", 1));
+                    adapter.notifyItemInsertedInSection(section, 0);
+                }
+            });
         }
-
     }
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -78,6 +98,15 @@ public class WeekdaysSection extends StatelessSection {
             itemTitle = view.findViewById(R.id.title_item);
             itemValue = view.findViewById(R.id.value_item);
             finishedButton = view.findViewById(R.id.button_finished_item);
+            finishedButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = adapter.getPositionInSection(getAdapterPosition());
+                    viewModel.addPoints(Integer.parseInt(itemValue.getText().toString()));
+                    viewModel.removeTask(sectionNr, position);
+                    adapter.notifyItemRemovedFromSection(section, position);
+                }
+            });
         }
     }
 }

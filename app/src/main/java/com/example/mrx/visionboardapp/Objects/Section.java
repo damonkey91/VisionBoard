@@ -15,6 +15,7 @@ public class Section {
         return title;
     }
 
+    //ta bort ?????
     public void setTitle(String title) {
         this.title = title;
     }
@@ -23,7 +24,16 @@ public class Section {
         return taskList;
     }
 
+    //ta bort ?????
     public void setTaskList(ArrayList<Task> taskList) {
         this.taskList = taskList;
+    }
+
+    public void addTask(Task task){
+        taskList.add(task);
+    }
+
+    public void removeTask(int positionTask){
+        taskList.remove(positionTask);
     }
 }
