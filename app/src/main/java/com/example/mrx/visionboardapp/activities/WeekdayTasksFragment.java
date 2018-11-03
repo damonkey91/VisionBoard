@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.mrx.visionboardapp.Interfaces.IWeekdaysSectionInterface;
 import com.example.mrx.visionboardapp.Objects.Section;
@@ -24,7 +23,7 @@ import com.example.mrx.visionboardapp.ViewModel.WeekdayViewModel;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
-public class WeekdayActivities extends Fragment implements IWeekdaysSectionInterface {
+public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionInterface {
     public static final int REQUEST_CODE_CREATE_TASK = 4599;
     public static final String POSITION_KEY = "positionkeyyy";
 
@@ -41,7 +40,7 @@ public class WeekdayActivities extends Fragment implements IWeekdaysSectionInter
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewModel = ViewModelProviders.of(this).get(WeekdayViewModel.class);
-        view = inflater.inflate(R.layout.activity_weekday_activities, container, false);
+        view = inflater.inflate(R.layout.fragment_weekday_activities, container, false);
         setupListView();
         return view;
     }

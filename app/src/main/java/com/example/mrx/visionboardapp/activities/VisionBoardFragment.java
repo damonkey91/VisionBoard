@@ -22,17 +22,17 @@ import android.widget.ImageView;
 
 import com.example.mrx.visionboardapp.Helpers.GetImageExternalStorage;
 import com.example.mrx.visionboardapp.R;
-import com.example.mrx.visionboardapp.ViewModel.WeekdayViewModel;
+import com.example.mrx.visionboardapp.ViewModel.VisionBoardViewModel;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class VisionBoard extends Fragment {
+public class VisionBoardFragment extends Fragment {
 
     private static final int RESULT_LOAD_IMAGE = 21123;
 
     private ImageView imageView;
-    private WeekdayViewModel viewModel;
+    private VisionBoardViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +42,8 @@ public class VisionBoard extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewModel = ViewModelProviders.of(getActivity()).get(WeekdayViewModel.class);
-        View view = inflater.inflate(R.layout.activity_vision_board, container, false);
+        viewModel = ViewModelProviders.of(getActivity()).get(VisionBoardViewModel.class);
+        View view = inflater.inflate(R.layout.fragment_vision_board, container, false);
         imageView = view.findViewById(R.id.imageView);
         setHasOptionsMenu(true);
         setImage();

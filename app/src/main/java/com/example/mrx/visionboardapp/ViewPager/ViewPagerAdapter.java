@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.mrx.visionboardapp.R;
-import com.example.mrx.visionboardapp.activities.RewardsAndPoints;
-import com.example.mrx.visionboardapp.activities.VisionBoard;
-import com.example.mrx.visionboardapp.activities.WeekdayActivities;
+import com.example.mrx.visionboardapp.activities.RewardsAndPointsFragment;
+import com.example.mrx.visionboardapp.activities.VisionBoardFragment;
+import com.example.mrx.visionboardapp.activities.WeekdayTasksFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -26,11 +26,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new VisionBoard();
+                return new VisionBoardFragment();
             case 1:
-                return new WeekdayActivities();
+                return new WeekdayTasksFragment();
             case 2:
-                return new RewardsAndPoints();
+                return new RewardsAndPointsFragment();
             default:
                 return null;
         }

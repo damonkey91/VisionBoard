@@ -37,7 +37,7 @@ public class CreateTaskActivity extends AppCompatActivity {
             intent.putExtra(POINT_KEY, getTaskPoint());
             intent.putExtra(TASK_NAME_KEY, getTaskName());
             intent.putExtra(TASK_DESCRIPTION_KEY, getTaskDescription());
-            setResult(WeekdayActivities.REQUEST_CODE_CREATE_TASK, intent);
+            setResult(WeekdayTasksFragment.REQUEST_CODE_CREATE_TASK, intent);
             finish();
         } else {
             taskNameET.setError(getString(R.string.required));
