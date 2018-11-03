@@ -5,15 +5,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.mrx.visionboardapp.Interfaces.IWeekdaysSectionInterface;
 import com.example.mrx.visionboardapp.Objects.Task;
 import com.example.mrx.visionboardapp.R;
-import com.example.mrx.visionboardapp.ViewModels.WeekdayViewModel;
 
 import java.util.ArrayList;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class WeekdaysSection extends StatelessSection {
@@ -21,11 +19,10 @@ public class WeekdaysSection extends StatelessSection {
     private int sectionNr;
     private String title;
     private ArrayList<Task> taskList;
-    private WeekdayViewModel viewModel;
-    private SectionedRecyclerViewAdapter adapter;
-    private Section section;
+    private WeekdaysSection section;
+    private IWeekdaysSectionInterface callback;
 
-    public WeekdaysSection(String title, ArrayList<Task> taskList, WeekdayViewModel viewModel, int sectionNr, SectionedRecyclerViewAdapter adapter) {
+    public WeekdaysSection(String title, ArrayList<Task> taskList, int sectionNr, IWeekdaysSectionInterface callback) {
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.item_recycler_view)
                 .headerResourceId(R.layout.header_recycler_view)
@@ -33,10 +30,9 @@ public class WeekdaysSection extends StatelessSection {
 
         this.title = title;
         this.taskList = taskList;
-        this.viewModel = viewModel;
         this.sectionNr = sectionNr;
-        this.adapter = adapter;
         section = this;
+        this.callback = callback;
     }
 
     @Override
@@ -80,8 +76,7 @@ public class WeekdaysSection extends StatelessSection {
                 @Override
                 public void onClick(View v) {
                     //Todo: create dialog that creates a task and sends it back here
-                    viewModel.addTask(sectionNr, new Task("Springa", "Springa 6km", 1));
-                    adapter.notifyItemInsertedInSection(section, 0);
+                   callback.clickedCreateTask();
                 }
             });
         }
@@ -101,10 +96,7 @@ public class WeekdaysSection extends StatelessSection {
             finishedButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = adapter.getPositionInSection(getAdapterPosition());
-                    viewModel.addPoints(Integer.parseInt(itemValue.getText().toString()));
-                    viewModel.removeTask(sectionNr, position);
-                    adapter.notifyItemRemovedFromSection(section, position);
+                    callback.clickedFinishedTask(getAdapterPosition(), sectionNr, section, Integer.parseInt(itemValue.getText().toString()));
                 }
             });
         }

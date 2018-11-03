@@ -11,14 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.VisionBoard"></activity>
-        <activity android:name=".activities.WeekdayActivities">
+
+        <activity android:name=".activities.CreateTaskActivity" />
+        <activity android:name=".activities.ViewPagerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RewardsAndPoints"></activity>
     </application>
 
 </manifest>

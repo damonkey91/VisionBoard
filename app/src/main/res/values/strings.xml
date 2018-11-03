@@ -11,4 +11,13 @@
     <string name="friday">Fredag</string>
     <string name="saturday">Lördag</string>
     <string name="sunday">Söndag</string>
+    <string name="create_task">Skapa uppgift</string>
+    <string name="cancel">Avbryt</string>
+    <string name="create">Skapa</string>
+    <string name="task_description">Aktivitets beskrivning</string>
+    <string name="task">Aktivitet</string>
+    <string name="required">Krävs</string>
+    <string name="vision_board">Vision Board</string>
+    <string name="tasks">Aktiviteter</string>
+    <string name="rewards_and_points"><![CDATA[Belöning & Poäng]]></string>
 </resources>

@@ -11,14 +11,14 @@ import java.util.List;
 
 public class WeekdayList {
 
-    public final String MONDAY_KEY = "monday";
-    public final String TUESDAY_KEY = "tuesday";
-    public final String WEDNESDAY_KEY = "wednesday";
-    public final String THURSDAY_KEY = "thursday";
-    public final String FRIDAY_KEY = "friday";
-    public final String SATURDAY_KEY = "saturday";
-    public final String SUNDAY_KEY = "sunday";
-    public final List<String> dayList = Arrays.asList(MONDAY_KEY, TUESDAY_KEY, WEDNESDAY_KEY, THURSDAY_KEY, FRIDAY_KEY, SATURDAY_KEY, SUNDAY_KEY);
+    public static final String MONDAY_KEY = "monday";
+    public static final String TUESDAY_KEY = "tuesday";
+    public static final String WEDNESDAY_KEY = "wednesday";
+    public static final String THURSDAY_KEY = "thursday";
+    public static final String FRIDAY_KEY = "friday";
+    public static final String SATURDAY_KEY = "saturday";
+    public static final String SUNDAY_KEY = "sunday";
+    public static final List<String> dayList = Arrays.asList(MONDAY_KEY, TUESDAY_KEY, WEDNESDAY_KEY, THURSDAY_KEY, FRIDAY_KEY, SATURDAY_KEY, SUNDAY_KEY);
 
     private HashMap<String, Section> sectionList;
 
