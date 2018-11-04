@@ -10,6 +10,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,7 +21,7 @@ import com.example.mrx.visionboardapp.Objects.Task;
 import com.example.mrx.visionboardapp.Objects.WeekdayList;
 import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.RecyclerViews.WeekdaysSection;
-import com.example.mrx.visionboardapp.ViewModel.WeekdayViewModel;
+import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
@@ -28,18 +30,19 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     public static final String POSITION_KEY = "positionkeyyy";
 
     private View view;
-    private WeekdayViewModel viewModel;
+    private TaskAndPointsViewModel viewModel;
     SectionedRecyclerViewAdapter sectionAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewModel = ViewModelProviders.of(this).get(WeekdayViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(TaskAndPointsViewModel.class);
         view = inflater.inflate(R.layout.fragment_weekday_activities, container, false);
         setupListView();
         return view;
@@ -53,8 +56,6 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
 
         int sectionIndex = 0;
         for (Section section : viewModel.getSections()) {
-            String day = WeekdayList.dayList.get(sectionIndex);
-            String title = section.getTitle();
             sectionAdapter.addSection(WeekdayList.dayList.get(sectionIndex), new WeekdaysSection(section.getTitle(), section.getTaskList(), sectionIndex, this));
             sectionIndex++;
         }
@@ -63,8 +64,9 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     }
 
     @Override
-    public void clickedCreateTask() {
+    public void clickedCreateTask(int sectionNr) {
         Intent intent = new Intent(getContext(), CreateTaskActivity.class);
+        intent.putExtra(POSITION_KEY, sectionNr);
         startActivityForResult(intent, REQUEST_CODE_CREATE_TASK);
     }
 
@@ -82,8 +84,15 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
             String taskName = intent.getStringExtra(CreateTaskActivity.TASK_NAME_KEY);
             String taskDesc = intent.getStringExtra(CreateTaskActivity.TASK_DESCRIPTION_KEY);
             int taskPoint = intent.getIntExtra(CreateTaskActivity.POINT_KEY, 0);
-            viewModel.addTask(1, new Task(taskName, taskDesc, taskPoint));
-            sectionAdapter.notifyItemInsertedInSection(WeekdayList.MONDAY_KEY, 0);
+            int position = intent.getIntExtra(POSITION_KEY, 0);
+            viewModel.addTask(position, new Task(taskName, taskDesc, taskPoint));
+            sectionAdapter.notifyItemInsertedInSection(WeekdayList.dayList.get(position), 0);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.points_menu, menu);
+        menu.findItem(R.id.actionbar_points).setTitle(""+viewModel.getTotalPoints()+"$");
     }
 }

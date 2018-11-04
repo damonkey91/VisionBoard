@@ -37,6 +37,7 @@ public class VisionBoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -45,7 +46,6 @@ public class VisionBoardFragment extends Fragment {
         viewModel = ViewModelProviders.of(getActivity()).get(VisionBoardViewModel.class);
         View view = inflater.inflate(R.layout.fragment_vision_board, container, false);
         imageView = view.findViewById(R.id.imageView);
-        setHasOptionsMenu(true);
         setImage();
         return view;
     }

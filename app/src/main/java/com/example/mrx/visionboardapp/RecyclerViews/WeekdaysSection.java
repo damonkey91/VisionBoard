@@ -75,8 +75,7 @@ public class WeekdaysSection extends StatelessSection {
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Todo: create dialog that creates a task and sends it back here
-                   callback.clickedCreateTask();
+                   callback.clickedCreateTask(sectionNr);
                 }
             });
         }
