@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.mrx.visionboardapp.Interfaces.IRewardRecyclerViewInterface;
 import com.example.mrx.visionboardapp.Objects.Reward;
@@ -44,8 +44,8 @@ public class RewardRecyclerViewAdapter extends RecyclerView.Adapter<RewardRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private EditText rewardName;
-        private EditText rewardPrice;
+        private TextView rewardName;
+        private TextView rewardPrice;
         private Button buyButton;
 
         public ViewHolder(View itemView) {
@@ -56,7 +56,7 @@ public class RewardRecyclerViewAdapter extends RecyclerView.Adapter<RewardRecycl
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callback.clickedBuy();
+                    callback.clickedBuy(getAdapterPosition());
                 }
             });
         }

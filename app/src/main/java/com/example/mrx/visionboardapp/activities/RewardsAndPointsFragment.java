@@ -14,11 +14,16 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mrx.visionboardapp.Dialogs.AlertingDialog;
+import com.example.mrx.visionboardapp.Dialogs.CreateRewardDialog;
+import com.example.mrx.visionboardapp.Interfaces.ICreateRewardDialogInterface;
+import com.example.mrx.visionboardapp.Interfaces.IRewardRecyclerViewInterface;
+import com.example.mrx.visionboardapp.Objects.Reward;
 import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.RecyclerViews.RewardRecyclerViewAdapter;
 import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
-public class RewardsAndPointsFragment extends Fragment {
+public class RewardsAndPointsFragment extends Fragment implements IRewardRecyclerViewInterface, ICreateRewardDialogInterface {
 
     private TaskAndPointsViewModel viewModel;
     private View view;
@@ -37,6 +42,7 @@ public class RewardsAndPointsFragment extends Fragment {
         viewModel = ViewModelProviders.of(getActivity()).get(TaskAndPointsViewModel.class);
         view = inflater.inflate(R.layout.fragment_rewards_and_points, container, false);
         setupListView();
+        setupAddButton();
         return view;
     }
 
@@ -47,7 +53,7 @@ public class RewardsAndPointsFragment extends Fragment {
     }
 
     private void setupListView(){
-        adapter = new RewardRecyclerViewAdapter();
+        adapter = new RewardRecyclerViewAdapter(viewModel.getRewardList(),this);
         listView = view.findViewById(R.id.reward_list_view);
         listView.setHasFixedSize(true);
         listView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -55,5 +61,31 @@ public class RewardsAndPointsFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
+    @Override
+    public void clickedBuy(int position) {
+        if (viewModel.gotEnoughPoints(position)){
+            viewModel.subtractPointsAndRemoveReward(position);
+            adapter.notifyItemRemoved(position);
+        } else{
+            AlertingDialog.newInstance(getString(R.string.not_enough_points)).show(getFragmentManager(), "hh");
+        }
 
+    }
+
+    private void setupAddButton(){
+        final ICreateRewardDialogInterface callback = this;
+        view.findViewById(R.id.add_reward_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateRewardDialog.newInstance(callback).show(getFragmentManager(), "hh");
+            }
+        });
+    }
+
+    @Override
+    public void createReward(Reward reward) {
+        viewModel.addToRewardList(reward);
+        adapter.notifyItemInserted(0);
+    }
 }
+

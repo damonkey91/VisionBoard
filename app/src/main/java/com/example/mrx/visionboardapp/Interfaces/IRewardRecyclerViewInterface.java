@@ -1,5 +1,5 @@
 package com.example.mrx.visionboardapp.Interfaces;
 
 public interface IRewardRecyclerViewInterface {
-    public void clickedBuy();
+    public void clickedBuy(int position);
 }
