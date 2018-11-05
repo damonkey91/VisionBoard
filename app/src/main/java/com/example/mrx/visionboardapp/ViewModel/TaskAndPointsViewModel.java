@@ -3,9 +3,8 @@ package com.example.mrx.visionboardapp.ViewModel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
 import com.example.mrx.visionboardapp.Objects.Reward;
 import com.example.mrx.visionboardapp.Objects.Section;
 import com.example.mrx.visionboardapp.Objects.Task;
@@ -16,22 +15,20 @@ import java.util.HashMap;
 
 public class TaskAndPointsViewModel extends AndroidViewModel {
 
-    private static final String TOTAL_POINTS_KEY= "totalpointskeyyy";
-
     private Context context;
     private WeekdayList weekdayList;
-    private int totalPoints;
+    private int totalPoints = 0;
     private ArrayList<Reward> rewardList;
 
     public TaskAndPointsViewModel(Application application){
         super(application);
+        context = application;
         if (weekdayList == null){
-            weekdayList = new WeekdayList(application);
+            weekdayList = getWeekdaylistFromSharedPreferences();
         }
         if (rewardList == null){
-            rewardList = new ArrayList<>();
+            rewardList = getRewardlistFromSharedPreferences();
         }
-        context = application;
         setTotalPoints();
     }
 
@@ -46,10 +43,12 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
 
     public void addTask(int positionDay, Task task){
         weekdayList.addTask(weekdayList.getDay(positionDay), task);
+        saveWeekdaylistToSharedPreferences();
     }
 
     public void removeTask(int positionDay, int positioTask){
         weekdayList.removeTask(weekdayList.getDay(positionDay), positioTask);
+        saveWeekdaylistToSharedPreferences();
     }
 
     public int getTotalPoints() {
@@ -57,8 +56,7 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
     }
 
     private void setTotalPoints() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.totalPoints = prefs.getInt(TOTAL_POINTS_KEY, 0);
+        totalPoints = HandleSharedPreferences.getPointsFromSharedPreferences(context);
     }
 
     public void addPoints(int addPoints){
@@ -70,12 +68,11 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         totalPoints -= rewardList.get(rewardPosition).getRewardPrice();
         rewardList.remove(rewardPosition);
         savePointsToSharedPreferences();
+        saveRewardlistToSharedPreferences();
     }
 
     private void savePointsToSharedPreferences(){
-        SharedPreferences.Editor prefsEdit = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefsEdit.putInt(TOTAL_POINTS_KEY, totalPoints);
-        prefsEdit.commit();
+        HandleSharedPreferences.savePointsToSharedPreferences(totalPoints, context);
     }
 
     public boolean gotEnoughPoints(int rewardPosition){
@@ -88,5 +85,36 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
 
     public void addToRewardList(Reward reward){
         rewardList.add(0, reward);
+        saveRewardlistToSharedPreferences();
+    }
+
+    //Todo: Bör egentligen vara en sqlite database istället för sharedpreferences
+
+    public void saveWeekdaylistToSharedPreferences(){
+        //TODO: asynkron sparning
+        HandleSharedPreferences.saveObject(weekdayList, context, HandleSharedPreferences.WEEKDAY_LIST_KEY);
+    }
+
+    public WeekdayList getWeekdaylistFromSharedPreferences(){
+        //TODO: asynkron hämtning
+        Object object = HandleSharedPreferences.getObjectFromSharedPreferences(context, HandleSharedPreferences.WEEKDAY_LIST_KEY);
+        if (object != null){
+            return (WeekdayList) object;
+        }
+        return new WeekdayList(context);
+    }
+
+    public void saveRewardlistToSharedPreferences(){
+        //TODO: asynkron sparning
+        HandleSharedPreferences.saveObject(rewardList, context, HandleSharedPreferences.REWARD_LIST_KEY);
+    }
+
+    public ArrayList<Reward> getRewardlistFromSharedPreferences(){
+        //TODO: asynkron hämtning
+        Object object = HandleSharedPreferences.getObjectFromSharedPreferences(context, HandleSharedPreferences.REWARD_LIST_KEY);
+        if (object != null){
+            return (ArrayList<Reward>) object;
+        }
+        return new ArrayList<>();
     }
 }

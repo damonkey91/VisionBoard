@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.mrx.visionboardapp.Dialogs.AlertingDialog;
 import com.example.mrx.visionboardapp.Dialogs.CreateRewardDialog;
+import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
 import com.example.mrx.visionboardapp.Interfaces.ICreateRewardDialogInterface;
 import com.example.mrx.visionboardapp.Interfaces.IRewardRecyclerViewInterface;
 import com.example.mrx.visionboardapp.Objects.Reward;

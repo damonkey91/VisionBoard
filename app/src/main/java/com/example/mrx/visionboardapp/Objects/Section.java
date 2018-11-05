@@ -30,7 +30,7 @@ public class Section {
     }
 
     public void addTask(Task task){
-        taskList.add(task);
+        taskList.add(0 ,task);
     }
 
     public void removeTask(int positionTask){

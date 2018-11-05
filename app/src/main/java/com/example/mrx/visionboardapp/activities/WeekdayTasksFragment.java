@@ -42,7 +42,7 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewModel = ViewModelProviders.of(this).get(TaskAndPointsViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(TaskAndPointsViewModel.class);
         view = inflater.inflate(R.layout.fragment_weekday_activities, container, false);
         setupListView();
         return view;
