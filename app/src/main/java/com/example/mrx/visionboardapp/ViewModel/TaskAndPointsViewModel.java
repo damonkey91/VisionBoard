@@ -2,6 +2,8 @@ package com.example.mrx.visionboardapp.ViewModel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
@@ -17,7 +19,7 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
 
     private Context context;
     private WeekdayList weekdayList;
-    private int totalPoints = 0;
+    private MutableLiveData<Integer> totalPoints;
     private ArrayList<Reward> rewardList;
 
     public TaskAndPointsViewModel(Application application){
@@ -51,32 +53,33 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         saveWeekdaylistToSharedPreferences();
     }
 
-    public int getTotalPoints() {
+    public LiveData<Integer> getTotalPoints() {
         return totalPoints;
     }
 
     private void setTotalPoints() {
-        totalPoints = HandleSharedPreferences.getPointsFromSharedPreferences(context);
+        totalPoints = new MutableLiveData<>();
+        totalPoints.setValue(HandleSharedPreferences.getPointsFromSharedPreferences(context));
     }
 
     public void addPoints(int addPoints){
-        totalPoints += addPoints;
+        totalPoints.setValue(totalPoints.getValue()+addPoints);
         savePointsToSharedPreferences();
     }
 
     public void subtractPointsAndRemoveReward(int rewardPosition){
-        totalPoints -= rewardList.get(rewardPosition).getRewardPrice();
+        totalPoints.setValue(totalPoints.getValue() - rewardList.get(rewardPosition).getRewardPrice());
         rewardList.remove(rewardPosition);
         savePointsToSharedPreferences();
         saveRewardlistToSharedPreferences();
     }
 
     private void savePointsToSharedPreferences(){
-        HandleSharedPreferences.savePointsToSharedPreferences(totalPoints, context);
+        HandleSharedPreferences.savePointsToSharedPreferences(totalPoints.getValue(), context);
     }
 
     public boolean gotEnoughPoints(int rewardPosition){
-        return rewardList.get(rewardPosition).getRewardPrice() <= totalPoints;
+        return rewardList.get(rewardPosition).getRewardPrice() <= totalPoints.getValue();
     }
 
     public ArrayList<Reward> getRewardList() {

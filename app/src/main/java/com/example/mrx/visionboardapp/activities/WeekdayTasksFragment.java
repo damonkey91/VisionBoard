@@ -1,5 +1,6 @@
 package com.example.mrx.visionboardapp.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,12 +27,13 @@ import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
-public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionInterface {
+public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionInterface, Observer<Integer> {
     public static final int REQUEST_CODE_CREATE_TASK = 4599;
     public static final String POSITION_KEY = "positionkeyyy";
 
     private View view;
     private TaskAndPointsViewModel viewModel;
+    private MenuItem pointMenuItem;
     SectionedRecyclerViewAdapter sectionAdapter;
 
     @Override
@@ -93,6 +96,13 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.points_menu, menu);
-        menu.findItem(R.id.actionbar_points).setTitle(""+viewModel.getTotalPoints()+"$");
+        pointMenuItem = menu.findItem(R.id.actionbar_points);
+        viewModel.getTotalPoints().observe(this, this);
+        pointMenuItem.setTitle(viewModel.getTotalPoints().getValue()+"$");
+    }
+
+    @Override
+    public void onChanged(@Nullable Integer integer) {
+        pointMenuItem.setTitle(integer + "$");
     }
 }
