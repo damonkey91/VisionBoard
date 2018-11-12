@@ -1,10 +1,10 @@
 package com.example.mrx.visionboardapp.activities;
 
 import android.content.Intent;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 
 import com.example.mrx.visionboardapp.R;
@@ -14,8 +14,8 @@ public class CreateTaskActivity extends AppCompatActivity {
     public static final String TASK_NAME_KEY = "tasknamekeyyy";
     public static final String TASK_DESCRIPTION_KEY = "taskdeskriptionkey";
 
-    private EditText taskNameET;
-    private EditText taskDescriptionET;
+    private TextInputEditText taskNameET;
+    private TextInputEditText taskDescriptionET;
     private NumberPicker pointsNP;
 
     @Override
