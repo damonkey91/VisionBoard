@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#7E00D4</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!-- My colors -->
+    <color name="colorHeader">#DE007E</color>
+    <color name="colorAddButtons">#00ECFF</color>
+    <color name="colorAddButtonsPressed">#00D9EB</color>
+    <color name="colorPointText">#FFE320</color>
+    <color name="colorPositiveButton">#56FF00</color>
+    <color name="colorPositiveButtonPressed">#53F500</color>
+
 </resources>
