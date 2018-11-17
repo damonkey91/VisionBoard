@@ -33,7 +33,16 @@ public class Section {
         taskList.add(0 ,task);
     }
 
+    public void editTask(int taskPos, Task task){
+        removeTask(taskPos);
+        taskList.add(taskPos,task);
+    }
+
     public void removeTask(int positionTask){
         taskList.remove(positionTask);
+    }
+
+    public Task getTask(int positionTask){
+        return taskList.get(positionTask);
     }
 }

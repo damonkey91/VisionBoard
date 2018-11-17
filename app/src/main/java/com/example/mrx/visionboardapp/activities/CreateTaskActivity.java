@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.NumberPicker;
 
 import com.example.mrx.visionboardapp.R;
@@ -29,6 +30,8 @@ public class CreateTaskActivity extends AppCompatActivity {
         pointsNP.setMinValue(1);
         pointsNP.setMaxValue(3);
         pointsNP.setDisplayedValues(new String[]{"1", "5", "10"});
+
+        setupIfEditTask();
     }
 
     public void clickedCreateButton(View view){
@@ -70,5 +73,28 @@ public class CreateTaskActivity extends AppCompatActivity {
 
     private boolean validForm(){
         return !getTaskName().isEmpty();
+    }
+
+    private void setupIfEditTask(){
+        Intent intent = getIntent();
+        int requestCode = intent.getIntExtra(WeekdayTasksFragment.REQUEST_CODE, 0);
+        if (requestCode == WeekdayTasksFragment.REQUEST_CODE_EDIT_TASK){
+            String[] task = intent.getStringArrayExtra(WeekdayTasksFragment.TASK_KEY);
+            pointsNP.setValue(getPickerValue(Integer.parseInt(task[0])));
+            taskNameET.setText(task[1]);
+            taskDescriptionET.setText(task[2]);
+            ((Button)findViewById(R.id.button2)).setText(R.string.save);
+        }
+    }
+
+    private int getPickerValue(int i) {
+        switch (i) {
+            case 5:
+                return 2;
+            case 10:
+                return 3;
+            default:
+                return 1;
+        }
     }
 }

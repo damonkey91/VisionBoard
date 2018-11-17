@@ -17,10 +17,14 @@ import java.util.HashMap;
 
 public class TaskAndPointsViewModel extends AndroidViewModel {
 
+    private static final String ACTIVE_DAY_POSITION = "ACTIVE_DAY_POSITION";
+    private static final String ACTIVE_TASK_IN_SECTION_POSITION = "ACTIVE_TASK_IN_SECTION_POSITION";
+
     private Context context;
     private WeekdayList weekdayList;
     private MutableLiveData<Integer> totalPoints;
     private ArrayList<Reward> rewardList;
+    private HashMap<String, Integer> activeTaskPositions = new HashMap<>();
 
     public TaskAndPointsViewModel(Application application){
         super(application);
@@ -48,9 +52,22 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         saveWeekdaylistToSharedPreferences();
     }
 
-    public void removeTask(int positionDay, int positioTask){
-        weekdayList.removeTask(weekdayList.getDay(positionDay), positioTask);
+    public void editTask(int dayPosition, int taskPosition, Task task) {
+        weekdayList.editTask(WeekdayList.dayList.get(dayPosition), taskPosition, task);
         saveWeekdaylistToSharedPreferences();
+    }
+
+    public void removeTask(int positionDay, int positionTask){
+        weekdayList.removeTask(weekdayList.getDay(positionDay), positionTask);
+        saveWeekdaylistToSharedPreferences();
+    }
+
+    public Task getTask(int positionDay, int positionTask){
+        return weekdayList.getSection(WeekdayList.dayList.get(positionDay)).getTask(positionTask);
+    }
+
+    public Task getActiveTask(){
+        return getTask(getActiveDayPosition(), getActiveTaskInSectionPosition());
     }
 
     public LiveData<Integer> getTotalPoints() {
@@ -119,5 +136,18 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
             return (ArrayList<Reward>) object;
         }
         return new ArrayList<>();
+    }
+
+    public void setActiveTaskPositions(Integer taskInSectionPos, Integer sectionPos){
+        activeTaskPositions.put(ACTIVE_TASK_IN_SECTION_POSITION, taskInSectionPos);
+        activeTaskPositions.put(ACTIVE_DAY_POSITION, sectionPos);
+    }
+
+    public int getActiveTaskInSectionPosition(){
+        return activeTaskPositions.get(ACTIVE_TASK_IN_SECTION_POSITION);
+    }
+
+    public int getActiveDayPosition(){
+        return activeTaskPositions.get(ACTIVE_DAY_POSITION);
     }
 }

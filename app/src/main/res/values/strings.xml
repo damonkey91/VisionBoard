@@ -25,4 +25,8 @@
     <string name="price">Pris</string>
     <string name="reward">Belöning</string>
     <string name="not_enough_points">För lite poäng!</string>
+    <string name="points">Poäng:</string>
+    <string name="edit">Ändra</string>
+    <string name="delete">Ta bort</string>
+    <string name="save">spara</string>
 </resources>

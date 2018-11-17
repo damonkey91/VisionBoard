@@ -81,7 +81,7 @@ public class WeekdaysSection extends StatelessSection {
         }
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView itemTitle;
         private final TextView itemValue;
@@ -98,6 +98,12 @@ public class WeekdaysSection extends StatelessSection {
                     callback.clickedFinishedTask(getAdapterPosition(), sectionNr, section, Integer.parseInt(itemValue.getText().toString()));
                 }
             });
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            callback.clickedOnItem(getAdapterPosition(), sectionNr);
         }
     }
 }

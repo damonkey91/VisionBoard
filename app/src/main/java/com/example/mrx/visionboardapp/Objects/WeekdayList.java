@@ -49,6 +49,10 @@ public class WeekdayList {
         sectionList.get(day).addTask(task);
     }
 
+    public void editTask(String day, int taskPos, Task task){
+        sectionList.get(day).editTask(taskPos, task);
+    }
+
     public void removeTask(String day, int positionTask){
         sectionList.get(day).removeTask(positionTask);
     }
