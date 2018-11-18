@@ -25,6 +25,7 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> totalPoints;
     private ArrayList<Reward> rewardList;
     private HashMap<String, Integer> activeTaskPositions = new HashMap<>();
+    private int activeRewardPosition = -1;
 
     public TaskAndPointsViewModel(Application application){
         super(application);
@@ -149,5 +150,19 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
 
     public int getActiveDayPosition(){
         return activeTaskPositions.get(ACTIVE_DAY_POSITION);
+    }
+
+    public void setActiveRewardPosition(int position){
+        activeRewardPosition = position;
+    }
+
+    public int getActiveRewardPosition(){
+       return activeRewardPosition;
+    }
+
+    public void editReward(int position, Reward reward) {
+        rewardList.remove(position);
+        rewardList.add(position, reward);
+        saveRewardlistToSharedPreferences();
     }
 }

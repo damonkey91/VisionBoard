@@ -39,6 +39,7 @@ public class ShowTaskDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         setupView();
         Dialog dialog = builder.setView(view)
+                .setTitle(task.getTitle())
                 .setPositiveButton(R.string.edit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -61,7 +62,6 @@ public class ShowTaskDialog extends DialogFragment {
     private void setupView(){
         view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_show_task, null, false);
         ((TextView) view.findViewById(R.id.points_input_tv)).setText("" + task.getValue());
-        ((TextView) view.findViewById(R.id.task_input_tv)).setText(task.getTitle());
         ((TextView) view.findViewById(R.id.description_input_tv)).setText(task.getDescription());
     }
 }

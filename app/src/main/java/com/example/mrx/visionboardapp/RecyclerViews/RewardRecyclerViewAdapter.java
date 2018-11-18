@@ -42,7 +42,7 @@ public class RewardRecyclerViewAdapter extends RecyclerView.Adapter<RewardRecycl
         return rewardList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView rewardName;
         private TextView rewardPrice;
@@ -59,6 +59,12 @@ public class RewardRecyclerViewAdapter extends RecyclerView.Adapter<RewardRecycl
                     callback.clickedBuy(getAdapterPosition());
                 }
             });
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            callback.clickedOnItem(getAdapterPosition());
         }
     }
 }

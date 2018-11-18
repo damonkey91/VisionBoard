@@ -78,7 +78,12 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
         } else{
             AlertingDialog.newInstance(getString(R.string.not_enough_points)).show(getFragmentManager(), "hh");
         }
+    }
 
+    @Override
+    public void clickedOnItem(int position) {
+        viewModel.setActiveRewardPosition(position);
+        CreateRewardDialog.newInstance(this).show(getFragmentManager(), "hh");
     }
 
     private void setupAddButton(){
@@ -86,6 +91,7 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
         view.findViewById(R.id.add_reward_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewModel.setActiveRewardPosition(-1);
                 CreateRewardDialog.newInstance(callback).show(getFragmentManager(), "hh");
             }
         });
@@ -93,8 +99,16 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
 
     @Override
     public void createReward(Reward reward) {
-        viewModel.addToRewardList(reward);
-        adapter.notifyItemInserted(0);
+        int position = viewModel.getActiveRewardPosition();
+        if (position == -1){
+            viewModel.addToRewardList(reward);
+            adapter.notifyItemInserted(0);
+        } else {
+            viewModel.editReward(position, reward);
+            adapter.notifyItemChanged(position);
+        }
+
+
     }
 
     @Override

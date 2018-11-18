@@ -29,4 +29,5 @@
     <string name="edit">Ändra</string>
     <string name="delete">Ta bort</string>
     <string name="save">spara</string>
+    <string name="edit_reward">Ändra belöning</string>
 </resources>

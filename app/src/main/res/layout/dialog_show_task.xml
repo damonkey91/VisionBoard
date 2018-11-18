@@ -8,25 +8,14 @@
 
     <TextView
         android:id="@+id/points_static_text"
-        android:layout_width="57dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/points"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/task_input_tv"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/points"
+        android:textAppearance="@style/OrdinaryTextAppearance"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/points_static_text" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/description_input_tv"
@@ -34,11 +23,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="8dp"
         android:text="TextView"
+        android:textAppearance="@style/OrdinaryTextAppearance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_input_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/points_static_text" />
 
     <TextView
         android:id="@+id/points_input_tv"
@@ -46,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
+        android:textAppearance="@style/OrdinaryTextAppearance"
         app:layout_constraintBottom_toBottomOf="@+id/points_static_text"
         app:layout_constraintStart_toEndOf="@+id/points_static_text"
         app:layout_constraintTop_toTopOf="@+id/points_static_text" />

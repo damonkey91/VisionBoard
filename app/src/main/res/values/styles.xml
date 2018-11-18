@@ -13,6 +13,11 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="OrdinaryTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
     <style name="RoundedButton" parent="android:Widget.Button">
         <item name="android:minWidth">35dp</item>
         <item name="android:minHeight">35dp</item>
