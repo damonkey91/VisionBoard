@@ -21,13 +21,14 @@ import com.example.mrx.visionboardapp.Dialogs.AlertingDialog;
 import com.example.mrx.visionboardapp.Dialogs.CreateRewardDialog;
 import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
 import com.example.mrx.visionboardapp.Interfaces.ICreateRewardDialogInterface;
+import com.example.mrx.visionboardapp.Interfaces.INotEnoughMoneyInterface;
 import com.example.mrx.visionboardapp.Interfaces.IRewardRecyclerViewInterface;
 import com.example.mrx.visionboardapp.Objects.Reward;
 import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.RecyclerViews.RewardRecyclerViewAdapter;
 import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
-public class RewardsAndPointsFragment extends Fragment implements IRewardRecyclerViewInterface, ICreateRewardDialogInterface, Observer<Integer> {
+public class RewardsAndPointsFragment extends Fragment implements IRewardRecyclerViewInterface, ICreateRewardDialogInterface, Observer<Integer>, INotEnoughMoneyInterface {
 
     private TaskAndPointsViewModel viewModel;
     private View view;
@@ -76,7 +77,7 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
             viewModel.subtractPointsAndRemoveReward(position);
             adapter.notifyItemRemoved(position);
         } else{
-            AlertingDialog.newInstance(getString(R.string.not_enough_points)).show(getFragmentManager(), "hh");
+            AlertingDialog.newInstance(this, getString(R.string.not_enough_points), position).show(getFragmentManager(), "hh");
         }
     }
 
@@ -107,14 +108,18 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
             viewModel.editReward(position, reward);
             adapter.notifyItemChanged(position);
         }
-
-
     }
 
     @Override
     public void onChanged(@Nullable Integer integer) {
         pointsTextView.setText(integer + "$");
         pointsMenuItem.setTitle(integer + "$");
+    }
+
+    @Override
+    public void clickedOverdraft(int position) {
+        viewModel.subtractPointsAndRemoveReward(position);
+        adapter.notifyItemRemoved(position);
     }
 }
 

@@ -30,4 +30,5 @@
     <string name="delete">Ta bort</string>
     <string name="save">spara</string>
     <string name="edit_reward">Ändra belöning</string>
+    <string name="overdraft">Övertrassera</string>
 </resources>
