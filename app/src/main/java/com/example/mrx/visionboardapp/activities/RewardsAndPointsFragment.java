@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +20,9 @@ import android.widget.TextView;
 
 import com.example.mrx.visionboardapp.Dialogs.AlertingDialog;
 import com.example.mrx.visionboardapp.Dialogs.CreateRewardDialog;
-import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
+import com.example.mrx.visionboardapp.Helpers.ItemTouchHelperCallback;
 import com.example.mrx.visionboardapp.Interfaces.ICreateRewardDialogInterface;
+import com.example.mrx.visionboardapp.Interfaces.IItemMovedCallback;
 import com.example.mrx.visionboardapp.Interfaces.INotEnoughMoneyInterface;
 import com.example.mrx.visionboardapp.Interfaces.IRewardRecyclerViewInterface;
 import com.example.mrx.visionboardapp.Objects.Reward;
@@ -28,7 +30,7 @@ import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.RecyclerViews.RewardRecyclerViewAdapter;
 import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
-public class RewardsAndPointsFragment extends Fragment implements IRewardRecyclerViewInterface, ICreateRewardDialogInterface, Observer<Integer>, INotEnoughMoneyInterface {
+public class RewardsAndPointsFragment extends Fragment implements IRewardRecyclerViewInterface, ICreateRewardDialogInterface, Observer<Integer>, INotEnoughMoneyInterface, IItemMovedCallback {
 
     private TaskAndPointsViewModel viewModel;
     private View view;
@@ -50,6 +52,7 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
         view = inflater.inflate(R.layout.fragment_rewards_and_points, container, false);
         pointsTextView = view.findViewById(R.id.pointTextView);
         setupListView();
+        setupItemTouch();
         setupAddButton();
         return view;
     }
@@ -69,6 +72,12 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
         listView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setAdapter(adapter);
+    }
+
+    private void setupItemTouch(){
+        ItemTouchHelperCallback touchHelperCallback = new ItemTouchHelperCallback(adapter, this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelperCallback);
+        itemTouchHelper.attachToRecyclerView(listView);
     }
 
     @Override
@@ -120,6 +129,11 @@ public class RewardsAndPointsFragment extends Fragment implements IRewardRecycle
     public void clickedOverdraft(int position) {
         viewModel.subtractPointsAndRemoveReward(position);
         adapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void itemMovedCallback() {
+        viewModel.moveRewardItem();
     }
 }
 

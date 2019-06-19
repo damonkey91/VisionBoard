@@ -13,6 +13,7 @@ import com.example.mrx.visionboardapp.Objects.Task;
 import com.example.mrx.visionboardapp.Objects.WeekdayList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class TaskAndPointsViewModel extends AndroidViewModel {
@@ -163,6 +164,10 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
     public void editReward(int position, Reward reward) {
         rewardList.remove(position);
         rewardList.add(position, reward);
+        saveRewardlistToSharedPreferences();
+    }
+
+    public void moveRewardItem(){
         saveRewardlistToSharedPreferences();
     }
 }
