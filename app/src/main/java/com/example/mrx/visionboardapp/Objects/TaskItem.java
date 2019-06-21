@@ -1,11 +1,14 @@
 package com.example.mrx.visionboardapp.Objects;
 
-public class Task {
+import com.example.mrx.visionboardapp.RecyclerViews.MySectionRecyclerViewAdapter;
+
+public class TaskItem extends RecyclerViewItem {
     private String title;
     private String description;
     private int value;
 
-    public Task(String title, String description, int value) {
+    public TaskItem(String title, String description, int value) {
+        super(MySectionRecyclerViewAdapter.ITEM_TYPE);
         this.title = title;
         this.description = description;
         this.value = value;

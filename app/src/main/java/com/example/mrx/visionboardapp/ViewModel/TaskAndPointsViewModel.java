@@ -7,26 +7,25 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
+import com.example.mrx.visionboardapp.Objects.RecyclerViewItem;
 import com.example.mrx.visionboardapp.Objects.Reward;
-import com.example.mrx.visionboardapp.Objects.Section;
-import com.example.mrx.visionboardapp.Objects.Task;
+import com.example.mrx.visionboardapp.Objects.TaskItem;
 import com.example.mrx.visionboardapp.Objects.WeekdayList;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 public class TaskAndPointsViewModel extends AndroidViewModel {
 
     private static final String ACTIVE_DAY_POSITION = "ACTIVE_DAY_POSITION";
     private static final String ACTIVE_TASK_IN_SECTION_POSITION = "ACTIVE_TASK_IN_SECTION_POSITION";
+    private static final int NOT_SET = -1;
 
     private Context context;
     private WeekdayList weekdayList;
     private MutableLiveData<Integer> totalPoints;
     private ArrayList<Reward> rewardList;
-    private HashMap<String, Integer> activeTaskPositions = new HashMap<>();
-    private int activeRewardPosition = -1;
+    private int activeTaskPosition = NOT_SET;
+    private int activeRewardPosition = NOT_SET;
 
     public TaskAndPointsViewModel(Application application){
         super(application);
@@ -40,36 +39,31 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         setTotalPoints();
     }
 
-    public ArrayList<Section> getSections(){
-        HashMap<String, Section> sections = weekdayList.getSectionList();
-        ArrayList<Section> tempSectionList = new ArrayList<>();
-        for (String day : weekdayList.dayList) {
-            tempSectionList.add(sections.get(day));
-        }
-        return tempSectionList;
-    }
-
-    public void addTask(int positionDay, Task task){
-        weekdayList.addTask(weekdayList.getDay(positionDay), task);
+    public void addTask(TaskItem task, int position){
+        weekdayList.addTask(task, position);
         saveWeekdaylistToSharedPreferences();
     }
 
-    public void editTask(int dayPosition, int taskPosition, Task task) {
-        weekdayList.editTask(WeekdayList.dayList.get(dayPosition), taskPosition, task);
+    public void editTask(int taskPosition, TaskItem task) {
+        weekdayList.editTask(taskPosition, task);
         saveWeekdaylistToSharedPreferences();
     }
 
-    public void removeTask(int positionDay, int positionTask){
-        weekdayList.removeTask(weekdayList.getDay(positionDay), positionTask);
+    public void removeTask(int positionTask){
+        weekdayList.removeTask(positionTask);
         saveWeekdaylistToSharedPreferences();
     }
 
-    public Task getTask(int positionDay, int positionTask){
-        return weekdayList.getSection(WeekdayList.dayList.get(positionDay)).getTask(positionTask);
+    public TaskItem getTask(int position){
+        return weekdayList.getTask(position);
     }
 
-    public Task getActiveTask(){
-        return getTask(getActiveDayPosition(), getActiveTaskInSectionPosition());
+    public TaskItem getActiveTask(){
+        return getTask(getActiveTaskPosition());
+    }
+
+    public ArrayList<RecyclerViewItem> getTaskAndHeaderList(){
+        return weekdayList.getTaskAndHeaderList();
     }
 
     public LiveData<Integer> getTotalPoints() {
@@ -123,7 +117,7 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         if (object != null){
             return (WeekdayList) object;
         }
-        return new WeekdayList(context);
+        return new WeekdayList();
     }
 
     public void saveRewardlistToSharedPreferences(){
@@ -140,17 +134,12 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
         return new ArrayList<>();
     }
 
-    public void setActiveTaskPositions(Integer taskInSectionPos, Integer sectionPos){
-        activeTaskPositions.put(ACTIVE_TASK_IN_SECTION_POSITION, taskInSectionPos);
-        activeTaskPositions.put(ACTIVE_DAY_POSITION, sectionPos);
+    public void setActiveTaskPosition(int position){
+        activeTaskPosition = position;
     }
 
-    public int getActiveTaskInSectionPosition(){
-        return activeTaskPositions.get(ACTIVE_TASK_IN_SECTION_POSITION);
-    }
-
-    public int getActiveDayPosition(){
-        return activeTaskPositions.get(ACTIVE_DAY_POSITION);
+    public int getActiveTaskPosition(){
+        return activeTaskPosition;
     }
 
     public void setActiveRewardPosition(int position){

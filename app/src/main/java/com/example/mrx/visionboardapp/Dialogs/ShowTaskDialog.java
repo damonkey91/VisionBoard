@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -14,19 +13,16 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.mrx.visionboardapp.Interfaces.IShowTaskInterface;
-import com.example.mrx.visionboardapp.Objects.Reward;
-import com.example.mrx.visionboardapp.Objects.Task;
+import com.example.mrx.visionboardapp.Objects.TaskItem;
 import com.example.mrx.visionboardapp.R;
-
-import java.net.InetSocketAddress;
 
 public class ShowTaskDialog extends DialogFragment {
 
     private IShowTaskInterface callback;
-    private Task task;
+    private TaskItem task;
     private View view;
 
-    public static ShowTaskDialog newInstance(Task task, IShowTaskInterface callback){
+    public static ShowTaskDialog newInstance(TaskItem task, IShowTaskInterface callback){
         ShowTaskDialog showTaskDialog = new ShowTaskDialog();
         showTaskDialog.callback = callback;
         showTaskDialog.task = task;

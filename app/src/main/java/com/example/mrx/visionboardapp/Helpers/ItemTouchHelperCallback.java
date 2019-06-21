@@ -3,7 +3,6 @@ package com.example.mrx.visionboardapp.Helpers;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 import com.example.mrx.visionboardapp.Interfaces.IItemMovedCallback;
 import com.example.mrx.visionboardapp.Interfaces.IItemTouchHelperAdapter;

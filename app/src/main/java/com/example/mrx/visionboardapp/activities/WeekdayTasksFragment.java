@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,29 +19,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mrx.visionboardapp.Dialogs.ShowTaskDialog;
+import com.example.mrx.visionboardapp.Helpers.ItemTouchHelperCallback;
+import com.example.mrx.visionboardapp.Interfaces.IItemMovedCallback;
 import com.example.mrx.visionboardapp.Interfaces.IShowTaskInterface;
 import com.example.mrx.visionboardapp.Interfaces.IWeekdaysSectionInterface;
-import com.example.mrx.visionboardapp.Objects.Section;
-import com.example.mrx.visionboardapp.Objects.Task;
-import com.example.mrx.visionboardapp.Objects.WeekdayList;
+import com.example.mrx.visionboardapp.Objects.TaskItem;
 import com.example.mrx.visionboardapp.R;
-import com.example.mrx.visionboardapp.RecyclerViews.WeekdaysSection;
+import com.example.mrx.visionboardapp.RecyclerViews.MySectionRecyclerViewAdapter;
 import com.example.mrx.visionboardapp.ViewModel.TaskAndPointsViewModel;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
-
-public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionInterface, Observer<Integer>, IShowTaskInterface {
+public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionInterface, Observer<Integer>, IShowTaskInterface, IItemMovedCallback {
     public static final int REQUEST_CODE_CREATE_TASK = 4599;
     public static final int REQUEST_CODE_EDIT_TASK = 4600;
     public static final String REQUEST_CODE = "requestcode";
-    public static final String DAY_POSITION_KEY = "daypositionkeyyy";
     public static final String TASK_POSITION_KEY = "taskinsectionpositionkeyyy";
     public static final String TASK_KEY = "taskkeyyy";
 
     private View view;
     private TaskAndPointsViewModel viewModel;
     private MenuItem pointMenuItem;
-    SectionedRecyclerViewAdapter sectionAdapter;
+    RecyclerView listView;
+    private MySectionRecyclerViewAdapter sectionAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,64 +53,58 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
         viewModel = ViewModelProviders.of(getActivity()).get(TaskAndPointsViewModel.class);
         view = inflater.inflate(R.layout.fragment_weekday_activities, container, false);
         setupListView();
+        ItemTouchHelperCallback touchHelperCallback = new ItemTouchHelperCallback(sectionAdapter, this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelperCallback);
+        itemTouchHelper.attachToRecyclerView(listView);
         return view;
     }
 
     private void setupListView(){
-        RecyclerView listView = view.findViewById(R.id.listview_weekdays);
+        listView = view.findViewById(R.id.listview_weekdays);
         listView.setHasFixedSize(true);
         listView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        sectionAdapter = new SectionedRecyclerViewAdapter();
-
-        int sectionIndex = 0;
-        for (Section section : viewModel.getSections()) {
-            sectionAdapter.addSection(WeekdayList.dayList.get(sectionIndex), new WeekdaysSection(section.getTitle(), section.getTaskList(), sectionIndex, this));
-            sectionIndex++;
-        }
+        sectionAdapter = new MySectionRecyclerViewAdapter(viewModel.getTaskAndHeaderList(), this);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setAdapter(sectionAdapter);
     }
 
     @Override
-    public void clickedCreateTask(int sectionNr) {
+    public void clickedCreateTask(int position) {
         Intent intent = new Intent(getContext(), CreateTaskActivity.class);
         intent.putExtra(REQUEST_CODE, REQUEST_CODE_CREATE_TASK);
-        intent.putExtra(DAY_POSITION_KEY, sectionNr);
+        intent.putExtra(TASK_POSITION_KEY, position);
         startActivityForResult(intent, REQUEST_CODE_CREATE_TASK);
     }
 
     @Override
-    public void clickedFinishedTask(int adapterPosition, int sectionNr, io.github.luizgrp.sectionedrecyclerviewadapter.Section section, int points) {
-        int position = sectionAdapter.getPositionInSection(adapterPosition);
+    public void clickedFinishedTask(int adapterPosition, int points) {
         viewModel.addPoints(points);
-        viewModel.removeTask(sectionNr, position);
-        sectionAdapter.notifyItemRemovedFromSection(section, position);
+        viewModel.removeTask(adapterPosition);
+        sectionAdapter.notifyItemRemoved(adapterPosition);
     }
 
     @Override
-    public void clickedOnItem(int adapterPosition, int sectionNr) {
-        int taskInSectionPos = sectionAdapter.getPositionInSection(adapterPosition);
-        viewModel.setActiveTaskPositions(taskInSectionPos, sectionNr);
+    public void clickedOnItem(int adapterPosition) {
+        viewModel.setActiveTaskPosition(adapterPosition);
         ShowTaskDialog.newInstance(viewModel.getActiveTask(), this).show(getFragmentManager(), "hh");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         if (intent != null) {
-            Task task = new Task(
+            TaskItem task = new TaskItem(
                     intent.getStringExtra(CreateTaskActivity.TASK_NAME_KEY),
                     intent.getStringExtra(CreateTaskActivity.TASK_DESCRIPTION_KEY),
                     intent.getIntExtra(CreateTaskActivity.POINT_KEY, 0)
             );
-            int dayPosition = intent.getIntExtra(DAY_POSITION_KEY, 0);
             int taskPosition = intent.getIntExtra(TASK_POSITION_KEY, 0);
 
             if (requestCode == REQUEST_CODE_CREATE_TASK) {
-                viewModel.addTask(dayPosition, task);
-                sectionAdapter.notifyItemInsertedInSection(WeekdayList.dayList.get(dayPosition), 0);
+                viewModel.addTask(task, taskPosition);
+                sectionAdapter.notifyItemInserted(taskPosition);
             }else if (requestCode == REQUEST_CODE_EDIT_TASK) {
-                viewModel.editTask(dayPosition, taskPosition, task);
-                sectionAdapter.notifyItemChangedInSection(WeekdayList.dayList.get(dayPosition), taskPosition);
+                viewModel.editTask(taskPosition, task);
+                sectionAdapter.notifyItemChanged(taskPosition);
             }
         }
     }
@@ -131,20 +124,23 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
 
     @Override
     public void deleteActiveTask() {
-        int dayPos = viewModel.getActiveDayPosition();
-        int taskPos = viewModel.getActiveTaskInSectionPosition();
-        viewModel.removeTask(dayPos, taskPos);
-        sectionAdapter.notifyItemRemovedFromSection(WeekdayList.dayList.get(dayPos), taskPos);
+        int taskPos = viewModel.getActiveTaskPosition();
+        viewModel.removeTask(taskPos);
+        sectionAdapter.notifyItemRemoved(taskPos);
     }
 
     @Override
     public void editActiveTask() {
-        Task task = viewModel.getActiveTask();
+        TaskItem task = viewModel.getActiveTask();
         Intent intent = new Intent(getContext(), CreateTaskActivity.class);
         intent.putExtra(REQUEST_CODE, REQUEST_CODE_EDIT_TASK);
-        intent.putExtra(DAY_POSITION_KEY, viewModel.getActiveDayPosition());
-        intent.putExtra(TASK_POSITION_KEY, viewModel.getActiveTaskInSectionPosition());
+        intent.putExtra(TASK_POSITION_KEY, viewModel.getActiveTaskPosition());
         intent.putExtra(TASK_KEY, new String[]{""+task.getValue(), task.getTitle(), task.getDescription()});
         startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
+    }
+
+    @Override
+    public void itemMovedCallback() {
+
     }
 }
