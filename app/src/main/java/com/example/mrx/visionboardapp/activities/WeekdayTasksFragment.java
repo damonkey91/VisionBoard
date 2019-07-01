@@ -141,6 +141,6 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
 
     @Override
     public void itemMovedCallback() {
-
+        viewModel.saveWeekdaylistToSharedPreferences();
     }
 }

@@ -4,10 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.mrx.visionboardapp.Objects.HeaderItem;
+import com.example.mrx.visionboardapp.Objects.RecyclerViewItem;
 import com.example.mrx.visionboardapp.Objects.Reward;
+import com.example.mrx.visionboardapp.Objects.TaskItem;
 import com.example.mrx.visionboardapp.Objects.WeekdayList;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+
+import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -61,8 +69,22 @@ public class HandleSharedPreferences {
 
     private static WeekdayList convertToWeekdayList(String json){
         Gson gson = new Gson();
-        Type type = new TypeToken<WeekdayList>() {}.getType();
-        return gson.fromJson(json, type);
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = parser.parse(json).getAsJsonObject();
+        JsonArray jsonArray = jsonObject.get("taskAndHeaderList").getAsJsonArray();
+        ArrayList<RecyclerViewItem> list = new ArrayList<>();
+        for (JsonElement jsonElemement : jsonArray) {
+            JsonObject recyclerViewItem = jsonElemement.getAsJsonObject();
+            int type = recyclerViewItem.get("type").getAsInt();
+            if (type == 2){
+                list.add(gson.fromJson(jsonElemement, TaskItem.class));
+            }else {
+                list.add(gson.fromJson(jsonElemement, HeaderItem.class));
+            }
+        }
+        WeekdayList weekdayList = new WeekdayList();
+        weekdayList.setTaskAndHeaderList(list);
+        return weekdayList;
     }
 
     private static ArrayList<Reward> convertToRewardList(String json){
