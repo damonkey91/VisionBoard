@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.mrx.visionboardapp.Helpers.GetImageExternalStorage;
+import com.example.mrx.visionboardapp.Helpers.CheckPermission;
 import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.ViewModel.VisionBoardViewModel;
 
@@ -60,7 +60,7 @@ public class VisionBoardFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.add_button_actionbar:
-                if (GetImageExternalStorage.checkReadPermission(this)){
+                if (CheckPermission.checkReadPermission(this)){
                     startIntentToPickImage();
                 }
                 return true;
@@ -88,7 +88,7 @@ public class VisionBoardFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == GetImageExternalStorage.REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION && grantResults.length > 0
+        if (requestCode == CheckPermission.REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             startIntentToPickImage();
         }

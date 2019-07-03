@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import com.example.mrx.visionboardapp.R;
 
@@ -31,7 +33,8 @@ public class CreateTaskActivity extends AppCompatActivity {
         pointsNP.setMaxValue(3);
         pointsNP.setDisplayedValues(new String[]{"1", "5", "10"});
 
-        setupIfEditTask();
+        boolean isEditMode = setupIfEditTask();
+        setToolbarTitle(isEditMode);
     }
 
     public void clickedCreateButton(View view){
@@ -75,7 +78,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         return !getTaskName().isEmpty();
     }
 
-    private void setupIfEditTask(){
+    private boolean setupIfEditTask(){
         Intent intent = getIntent();
         int requestCode = intent.getIntExtra(WeekdayTasksFragment.REQUEST_CODE, 0);
         if (requestCode == WeekdayTasksFragment.REQUEST_CODE_EDIT_TASK){
@@ -84,7 +87,9 @@ public class CreateTaskActivity extends AppCompatActivity {
             taskNameET.setText(task[1]);
             taskDescriptionET.setText(task[2]);
             ((Button)findViewById(R.id.button2)).setText(R.string.save);
+            return true;
         }
+        return false;
     }
 
     private int getPickerValue(int i) {
@@ -96,5 +101,12 @@ public class CreateTaskActivity extends AppCompatActivity {
             default:
                 return 1;
         }
+    }
+
+    private void setToolbarTitle(boolean isEditMode){
+        String title = isEditMode ? getString(R.string.edit_task) : getString(R.string.create_task);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(title);
     }
 }

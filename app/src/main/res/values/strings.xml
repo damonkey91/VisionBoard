@@ -11,7 +11,8 @@
     <string name="friday">Fredag</string>
     <string name="saturday">Lördag</string>
     <string name="sunday">Söndag</string>
-    <string name="create_task">Skapa uppgift</string>
+    <string name="create_task">Skapa aktivitet</string>
+    <string name="edit_task">Ändra aktivitet</string>
     <string name="cancel">Avbryt</string>
     <string name="create">Skapa</string>
     <string name="task_description">Aktivitets beskrivning</string>
@@ -31,4 +32,7 @@
     <string name="save">spara</string>
     <string name="edit_reward">Ändra belöning</string>
     <string name="overdraft">Övertrassera</string>
+    <string name="set_points">Sätt poäng</string>
+    <string name="save_to_file">spara till fil</string>
+    <string name="load_from_file">ladda från fil</string>
 </resources>

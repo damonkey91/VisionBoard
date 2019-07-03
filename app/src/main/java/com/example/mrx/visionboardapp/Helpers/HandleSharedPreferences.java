@@ -27,27 +27,27 @@ public class HandleSharedPreferences {
     public static final String REWARD_LIST_KEY = "rewardlistkey";
     private static final String TOTAL_POINTS_KEY= "totalpointskeyyy";
 
-    public static void savePointsToSharedPreferences(int points, Context context){
-        SharedPreferences.Editor prefsEdit = PreferenceManager.getDefaultSharedPreferences(context).edit();
+    public static void savePointsToSharedPreferences(int points){
+        SharedPreferences.Editor prefsEdit = PreferenceManager.getDefaultSharedPreferences(AppContextGetter.getContext()).edit();
         prefsEdit.putInt(TOTAL_POINTS_KEY, points);
         prefsEdit.commit();
     }
 
-    public static int getPointsFromSharedPreferences(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public static int getPointsFromSharedPreferences(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AppContextGetter.getContext());
         return prefs.getInt(TOTAL_POINTS_KEY, 0);
     }
 
-    public static void saveObject(Object object, Context context, String sharedPrefKey){
+    public static void saveObject(Object object, String sharedPrefKey){
+        Context context = AppContextGetter.getContext();
         SharedPreferences.Editor spEditor = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).edit();
         String json = convertToString(object);
         spEditor.putString(sharedPrefKey, json);
         spEditor.commit();
     }
 
-    public static Object getObjectFromSharedPreferences(Context context, String sharedPrefsKey){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(sharedPrefsKey, null);
+    public static Object getObjectFromSharedPreferences(String sharedPrefsKey){
+        String json = getStringFromSharedPreferences(sharedPrefsKey);
         Object object = null;
         if (json !=null){
             switch (sharedPrefsKey){
@@ -60,6 +60,13 @@ public class HandleSharedPreferences {
             }
         }
         return object;
+    }
+
+    public static String getStringFromSharedPreferences(String sharedPrefsKey){
+        Context context = AppContextGetter.getContext();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString(sharedPrefsKey, null);
+        return json;
     }
 
     private static String convertToString(Object object){
