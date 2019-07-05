@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
+import com.example.mrx.visionboardapp.Helpers.GsonHandler;
 import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
 import com.example.mrx.visionboardapp.Objects.RecyclerViewItem;
 import com.example.mrx.visionboardapp.Objects.Reward;
@@ -108,28 +109,32 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
 
     public void saveWeekdaylistToSharedPreferences(){
         //TODO: asynkron sparning
-        HandleSharedPreferences.saveObject(weekdayList, HandleSharedPreferences.WEEKDAY_LIST_KEY);
+        String string = GsonHandler.convertToString(weekdayList);
+        HandleSharedPreferences.saveString(string, HandleSharedPreferences.WEEKDAY_LIST_KEY);
     }
 
     public WeekdayList getWeekdaylistFromSharedPreferences(){
         //TODO: asynkron hämtning
-        Object object = HandleSharedPreferences.getObjectFromSharedPreferences(HandleSharedPreferences.WEEKDAY_LIST_KEY);
-        if (object != null){
-            return (WeekdayList) object;
+        String string = HandleSharedPreferences.getStringFromSharedPreferences(HandleSharedPreferences.WEEKDAY_LIST_KEY);
+        WeekdayList weekdayList = GsonHandler.convertToWeekdayList(string);
+        if (weekdayList != null){
+            return weekdayList;
         }
         return new WeekdayList();
     }
 
     public void saveRewardlistToSharedPreferences(){
         //TODO: asynkron sparning
-        HandleSharedPreferences.saveObject(rewardList, HandleSharedPreferences.REWARD_LIST_KEY);
+        String string = GsonHandler.convertToString(rewardList);
+        HandleSharedPreferences.saveString(string, HandleSharedPreferences.REWARD_LIST_KEY);
     }
 
     public ArrayList<Reward> getRewardlistFromSharedPreferences(){
         //TODO: asynkron hämtning
-        Object object = HandleSharedPreferences.getObjectFromSharedPreferences(HandleSharedPreferences.REWARD_LIST_KEY);
-        if (object != null){
-            return (ArrayList<Reward>) object;
+        String string = HandleSharedPreferences.getStringFromSharedPreferences(HandleSharedPreferences.REWARD_LIST_KEY);
+        ArrayList<Reward> list = GsonHandler.convertToRewardList(string);
+        if (list != null){
+            return list;
         }
         return new ArrayList<>();
     }

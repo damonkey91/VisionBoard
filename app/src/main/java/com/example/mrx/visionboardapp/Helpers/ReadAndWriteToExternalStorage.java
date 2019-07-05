@@ -1,12 +1,11 @@
 package com.example.mrx.visionboardapp.Helpers;
 
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -19,7 +18,6 @@ public class ReadAndWriteToExternalStorage {
         if (isExternalStorageWritable()){
             File storageDir = getAlbumStorageDir();
             File file = new File(storageDir, FILE_NAME);
-
             try
             {
                 file.createNewFile();
@@ -30,39 +28,29 @@ public class ReadAndWriteToExternalStorage {
                 myOutWriter.close();
                 fOut.flush();
                 fOut.close();
-                toast("backup created");
+                toast("backup created in download");
             }
             catch (IOException e)
             {
                 Log.e("Exception", "File write failed: " + e.toString());
                 toast("couldn't write to file");
             }
-
         }else {
             toast("couldn't access storage");
         }
     }
 
-    public static void readFromFile(){
+    public static void readFromFile(FileReadAsync.IFileReadCallback callback, Uri uri){
         if (isExternalStorageReadable()){
-            File storageDir = getAlbumStorageDir();
-            File textFile = new File(storageDir, FILE_NAME);
-            try {
-                FileInputStream fis = new FileInputStream(textFile);
-                toast("read file");
-            } catch (FileNotFoundException e) {
-                toast("couldn't read from file");
-                e.printStackTrace();
-            }
+            new FileReadAsync(callback).execute(uri);
         } else {
             toast("couldn't access storage");
         }
     }
 
-    public static File getAlbumStorageDir() {
-        // Get the directory for the user's public pictures directory.
+    private static File getAlbumStorageDir() {
         File path = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), ALBUM_NAME);
+                Environment.DIRECTORY_DOWNLOADS), ALBUM_NAME);
 
         if (!path.exists()) {
             if (!path.mkdirs())
@@ -93,4 +81,5 @@ public class ReadAndWriteToExternalStorage {
     private static void toast(String message){
         Toast.makeText(AppContextGetter.getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -1,11 +1,15 @@
 package com.example.mrx.visionboardapp.activities;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -14,6 +18,8 @@ import com.example.mrx.visionboardapp.R;
 import com.example.mrx.visionboardapp.ViewModel.SettingsViewModel;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final int FILE_PICKER_RESULT_CODE = 21124;
+    private static final String SHAREDPREF_CHANGED = "settingsresult";
     private SettingsViewModel viewModel;
 
     @Override
@@ -21,11 +27,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         viewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        viewModel.isChanged().observe(this, observer);
     }
 
     public void clickedLoadFromFile(View view) {
         if (CheckPermission.checkReadPermission(this))
-            viewModel.loadFromFile();
+            startIntentToPickFile();
         //Todo: load file and save to shared preferences
     }
 
@@ -52,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             switch (requestCode){
                 case CheckPermission.REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION:
-                    viewModel.loadFromFile();
+                    startIntentToPickFile();
                     break;
                 case CheckPermission.REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION:
                     viewModel.saveToFile();
@@ -60,4 +67,30 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void startIntentToPickFile(){
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        galleryIntent.setType("*/*");
+        startActivityForResult(galleryIntent, FILE_PICKER_RESULT_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        if (requestCode == FILE_PICKER_RESULT_CODE && resultCode == Activity.RESULT_OK){
+            Uri uri = intent.getData();
+            viewModel.loadFromFile(uri);
+        }
+    }
+
+    final private Observer<Boolean> observer = new Observer<Boolean>() {
+        @Override
+        public void onChanged(@Nullable Boolean changed) {
+            {
+                Intent resultIntent = getIntent();
+                resultIntent.putExtra(SHAREDPREF_CHANGED, changed);
+                setResult(Activity.RESULT_OK);
+            }
+        }
+    };
 }
