@@ -116,8 +116,8 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
     public WeekdayList getWeekdaylistFromSharedPreferences(){
         //TODO: asynkron hämtning
         String string = HandleSharedPreferences.getStringFromSharedPreferences(HandleSharedPreferences.WEEKDAY_LIST_KEY);
-        WeekdayList weekdayList = GsonHandler.convertToWeekdayList(string);
-        if (weekdayList != null){
+        if (string != null){
+            WeekdayList weekdayList = GsonHandler.convertToWeekdayList(string);
             return weekdayList;
         }
         return new WeekdayList();

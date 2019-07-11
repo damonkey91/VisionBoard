@@ -19,7 +19,7 @@ import com.example.mrx.visionboardapp.ViewModel.SettingsViewModel;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final int FILE_PICKER_RESULT_CODE = 21124;
-    private static final String SHAREDPREF_CHANGED = "settingsresult";
+    public static final String SHAREDPREF_CHANGED = "settingsresult";
     private SettingsViewModel viewModel;
 
     @Override
@@ -37,9 +37,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clickedSaveToFile(View view) {
-        CheckPermission.checkWritePermission(this);
-        viewModel.saveToFile();
-
+        if (CheckPermission.checkWritePermission(this))
+            viewModel.saveToFile();
     }
 
     public void clickedAddPoints(View view) {
@@ -89,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
             {
                 Intent resultIntent = getIntent();
                 resultIntent.putExtra(SHAREDPREF_CHANGED, changed);
-                setResult(Activity.RESULT_OK);
+                setResult(Activity.RESULT_OK, resultIntent);
             }
         }
     };
