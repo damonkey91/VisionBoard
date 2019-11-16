@@ -31,7 +31,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         pointsNP = findViewById(R.id.numberPicker);
         pointsNP.setMinValue(1);
         pointsNP.setMaxValue(3);
-        pointsNP.setDisplayedValues(new String[]{"1", "5", "10"});
+        pointsNP.setDisplayedValues(new String[]{"10", "50", "100"});
 
         boolean isEditMode = setupIfEditTask();
         setToolbarTitle(isEditMode);
@@ -65,11 +65,11 @@ public class CreateTaskActivity extends AppCompatActivity {
     private int getTaskPoint(){
         switch (pointsNP.getValue()){
             case 1:
-                return 1;
-            case 2:
-                return 5;
-            case 3:
                 return 10;
+            case 2:
+                return 50;
+            case 3:
+                return 100;
         }
         return 0;
     }
@@ -94,12 +94,14 @@ public class CreateTaskActivity extends AppCompatActivity {
 
     private int getPickerValue(int i) {
         switch (i) {
-            case 5:
-                return 2;
             case 10:
+                return 1;
+            case 50:
+                return 2;
+            case 100:
                 return 3;
             default:
-                return 1;
+                return 0;
         }
     }
 
