@@ -8,18 +8,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.mrx.visionboardapp.Helpers.GsonHandler;
+import com.example.mrx.visionboardapp.Objects.TaskItem;
 import com.example.mrx.visionboardapp.R;
 
-public class CreateTaskActivity extends AppCompatActivity {
-    public static final String POINT_KEY = "pointsss";
-    public static final String TASK_NAME_KEY = "tasknamekeyyy";
-    public static final String TASK_DESCRIPTION_KEY = "taskdeskriptionkey";
+import java.util.UUID;
 
+public class CreateTaskActivity extends AppCompatActivity {
     private TextInputEditText taskNameET;
     private TextInputEditText taskDescriptionET;
     private NumberPicker pointsNP;
+    private Switch recurrentSwitch;
+    private boolean editModeActive;
+    private UUID taskId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +33,30 @@ public class CreateTaskActivity extends AppCompatActivity {
         taskNameET = findViewById(R.id.activity_text);
         taskDescriptionET = findViewById(R.id.description_text);
         pointsNP = findViewById(R.id.numberPicker);
+        recurrentSwitch = findViewById(R.id.recurrent_switch);
         pointsNP.setMinValue(1);
         pointsNP.setMaxValue(3);
         pointsNP.setDisplayedValues(new String[]{"10", "50", "100"});
 
-        boolean isEditMode = setupIfEditTask();
-        setToolbarTitle(isEditMode);
+        editModeActive = isEditMode();
+        setupIfEditTask(editModeActive);
+        setToolbarTitle(editModeActive);
     }
 
     public void clickedCreateButton(View view){
         if (validForm()) {
+            taskId = (editModeActive && taskId != null) ? taskId : UUID.randomUUID();
+            String jsonObj = GsonHandler.convertToString(
+                    new TaskItem(
+                            getTaskName(),
+                            getTaskDescription(),
+                            getTaskPoint(),
+                            getTaskRecurrent(),
+                            taskId
+                    )
+            );
             Intent intent = getIntent();
-            intent.putExtra(POINT_KEY, getTaskPoint());
-            intent.putExtra(TASK_NAME_KEY, getTaskName());
-            intent.putExtra(TASK_DESCRIPTION_KEY, getTaskDescription());
+            intent.putExtra(WeekdayTasksFragment.TASK_KEY, jsonObj);
             setResult(WeekdayTasksFragment.REQUEST_CODE_CREATE_TASK, intent);
             finish();
         } else {
@@ -62,6 +76,10 @@ public class CreateTaskActivity extends AppCompatActivity {
         return taskDescriptionET.getText().toString();
     }
 
+    private boolean getTaskRecurrent(){
+        return recurrentSwitch.isChecked();
+    }
+
     private int getTaskPoint(){
         switch (pointsNP.getValue()){
             case 1:
@@ -78,18 +96,18 @@ public class CreateTaskActivity extends AppCompatActivity {
         return !getTaskName().isEmpty();
     }
 
-    private boolean setupIfEditTask(){
+    private void setupIfEditTask(boolean editModeActive){
         Intent intent = getIntent();
-        int requestCode = intent.getIntExtra(WeekdayTasksFragment.REQUEST_CODE, 0);
-        if (requestCode == WeekdayTasksFragment.REQUEST_CODE_EDIT_TASK){
-            String[] task = intent.getStringArrayExtra(WeekdayTasksFragment.TASK_KEY);
-            pointsNP.setValue(getPickerValue(Integer.parseInt(task[0])));
-            taskNameET.setText(task[1]);
-            taskDescriptionET.setText(task[2]);
+        if (editModeActive){
+            String jsonTask = intent.getStringExtra(WeekdayTasksFragment.TASK_KEY);
+            TaskItem task = GsonHandler.convertToTask(jsonTask);
+            pointsNP.setValue(getPickerValue(task.getValue()));
+            taskNameET.setText(task.getTitle());
+            taskDescriptionET.setText(task.getDescription());
             ((Button)findViewById(R.id.button2)).setText(R.string.save);
-            return true;
+            recurrentSwitch.setChecked(task.isRecurrent());
+            taskId = task.getId();
         }
-        return false;
     }
 
     private int getPickerValue(int i) {
@@ -101,7 +119,7 @@ public class CreateTaskActivity extends AppCompatActivity {
             case 100:
                 return 3;
             default:
-                return 0;
+                return 1;
         }
     }
 
@@ -110,5 +128,12 @@ public class CreateTaskActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(title);
+    }
+
+
+    private boolean isEditMode(){
+        Intent intent = getIntent();
+        int requestCode = intent.getIntExtra(WeekdayTasksFragment.REQUEST_CODE, 0);
+        return requestCode == WeekdayTasksFragment.REQUEST_CODE_EDIT_TASK;
     }
 }

@@ -2,6 +2,7 @@ package com.example.mrx.visionboardapp.Helpers;
 
 import com.example.mrx.visionboardapp.Objects.BackupObject;
 import com.example.mrx.visionboardapp.Objects.HeaderItem;
+import com.example.mrx.visionboardapp.Objects.RecurrentTask;
 import com.example.mrx.visionboardapp.Objects.RecyclerViewItem;
 import com.example.mrx.visionboardapp.Objects.Reward;
 import com.example.mrx.visionboardapp.Objects.TaskItem;
@@ -52,5 +53,17 @@ public class GsonHandler {
     public static BackupObject convertToBackupObject(String json){
         Gson gson = new Gson();
         return gson.fromJson(json, BackupObject.class);
+    }
+
+    public static ArrayList<RecurrentTask> convertToRecurrentTasksArray(String json){
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<TaskItem>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public static TaskItem convertToTask(String json){
+        Gson gson = new Gson();
+        Type type = new TypeToken<TaskItem>() {}.getType();
+        return gson.fromJson(json, type);
     }
 }

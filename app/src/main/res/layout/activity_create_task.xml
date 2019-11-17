@@ -31,10 +31,11 @@
                 android:id="@+id/activity_text_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
                 app:hintTextAppearance="@style/CustomTextAppearance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/numberPicker">
+                app:layout_constraintTop_toBottomOf="@+id/recurrent_switch">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/activity_text"
@@ -110,6 +111,16 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/button"
                 app:layout_constraintTop_toTopOf="@+id/button" />
+
+            <Switch
+                android:id="@+id/recurrent_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="false"
+                android:text="@string/recurrent_task"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/numberPicker" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

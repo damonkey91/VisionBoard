@@ -35,4 +35,5 @@
     <string name="set_points">Sätt poäng</string>
     <string name="save_to_file">spara till fil</string>
     <string name="load_from_file">ladda från fil</string>
+    <string name="recurrent_task">Återkommande</string>
 </resources>

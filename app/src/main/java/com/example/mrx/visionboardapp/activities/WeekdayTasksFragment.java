@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mrx.visionboardapp.Dialogs.ShowTaskDialog;
+import com.example.mrx.visionboardapp.Helpers.GsonHandler;
 import com.example.mrx.visionboardapp.Helpers.ItemTouchHelperCallback;
 import com.example.mrx.visionboardapp.Interfaces.IItemMovedCallback;
 import com.example.mrx.visionboardapp.Interfaces.IShowTaskInterface;
@@ -92,11 +93,7 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         if (intent != null) {
-            TaskItem task = new TaskItem(
-                    intent.getStringExtra(CreateTaskActivity.TASK_NAME_KEY),
-                    intent.getStringExtra(CreateTaskActivity.TASK_DESCRIPTION_KEY),
-                    intent.getIntExtra(CreateTaskActivity.POINT_KEY, 0)
-            );
+            TaskItem task = GsonHandler.convertToTask(intent.getStringExtra(TASK_KEY));
             int taskPosition = intent.getIntExtra(TASK_POSITION_KEY, 0);
 
             if (requestCode == REQUEST_CODE_CREATE_TASK) {
@@ -132,10 +129,11 @@ public class WeekdayTasksFragment extends Fragment implements IWeekdaysSectionIn
     @Override
     public void editActiveTask() {
         TaskItem task = viewModel.getActiveTask();
+        String jsonObj = GsonHandler.convertToString(task);
         Intent intent = new Intent(getContext(), CreateTaskActivity.class);
         intent.putExtra(REQUEST_CODE, REQUEST_CODE_EDIT_TASK);
         intent.putExtra(TASK_POSITION_KEY, viewModel.getActiveTaskPosition());
-        intent.putExtra(TASK_KEY, new String[]{""+task.getValue(), task.getTitle(), task.getDescription()});
+        intent.putExtra(TASK_KEY, jsonObj);
         startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
     }
 

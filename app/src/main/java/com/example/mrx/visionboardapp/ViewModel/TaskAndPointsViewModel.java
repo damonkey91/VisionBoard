@@ -8,6 +8,8 @@ import android.content.Context;
 
 import com.example.mrx.visionboardapp.Helpers.GsonHandler;
 import com.example.mrx.visionboardapp.Helpers.HandleSharedPreferences;
+import com.example.mrx.visionboardapp.Logic.RecurrentTaskLogic;
+import com.example.mrx.visionboardapp.Objects.RecurrentTask;
 import com.example.mrx.visionboardapp.Objects.RecyclerViewItem;
 import com.example.mrx.visionboardapp.Objects.Reward;
 import com.example.mrx.visionboardapp.Objects.TaskItem;
@@ -38,14 +40,25 @@ public class TaskAndPointsViewModel extends AndroidViewModel {
             rewardList = getRewardlistFromSharedPreferences();
         }
         setTotalPoints();
+        RecurrentTaskLogic.insertRecurrentTasksIn(weekdayList);
     }
 
     public void addTask(TaskItem task, int position){
         weekdayList.addTask(task, position);
         saveWeekdaylistToSharedPreferences();
+        if(task.isRecurrent())
+            RecurrentTaskLogic.addRecurrentTask(new RecurrentTask(task, weekdayList.getDayFor(position)));
     }
 
     public void editTask(int taskPosition, TaskItem task) {
+        if (task.isRecurrent() != weekdayList.getTask(taskPosition).isRecurrent()) {
+            if (task.isRecurrent())
+                RecurrentTaskLogic.addRecurrentTask(new RecurrentTask(task, weekdayList.getDayFor(taskPosition)));
+            else
+                RecurrentTaskLogic.removeRecurrentTask(task.getId());
+        }
+        if (task.isRecurrent() && task.isRecurrent() == weekdayList.getTask(taskPosition).isRecurrent())
+            RecurrentTaskLogic.editRecurrentTask(task);
         weekdayList.editTask(taskPosition, task);
         saveWeekdaylistToSharedPreferences();
     }
