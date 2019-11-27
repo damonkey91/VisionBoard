@@ -57,7 +57,7 @@ public class GsonHandler {
 
     public static ArrayList<RecurrentTask> convertToRecurrentTasksArray(String json){
         Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<TaskItem>>() {}.getType();
+        Type type = new TypeToken<ArrayList<RecurrentTask>>() {}.getType();
         return gson.fromJson(json, type);
     }
 

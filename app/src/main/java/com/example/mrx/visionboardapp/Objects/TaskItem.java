@@ -17,6 +17,7 @@ public class TaskItem extends RecyclerViewItem {
         this.description = description;
         this.value = value;
         this.recurrent = recurrent;
+        this.id = id;
     }
 
     public String getTitle() {

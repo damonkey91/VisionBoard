@@ -64,6 +64,7 @@ public class RecurrentTaskLogic {
                 weekdayList.addTasks(sortedTasks.get(key), position+1+addedTasks);
                 addedTasks += sortedTasks.get(key).size();
             }
+            HandleSharedPreferences.saveString(GsonHandler.convertToString(weekdayList), HandleSharedPreferences.WEEKDAY_LIST_KEY);
         }
     }
 
